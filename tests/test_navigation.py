@@ -70,19 +70,7 @@ def test_mobile_menu_toggle_hidden_on_desktop(page: Page):
 
 
 @pytest.mark.mobile
-@pytest.mark.parametrize(
-    "width",
-    [
-        pytest.param(
-            320,
-            marks=pytest.mark.xfail(
-                reason="BUG-001: на it.html карточки тем шире экрана 320px", strict=True
-            ),
-        ),
-        375,
-        768,
-    ],
-)
+@pytest.mark.parametrize("width", [320, 375, 768])  # 320 — регрессия BUG-001
 def test_no_horizontal_scroll_on_phones(page: Page, sitemap_paths, width):
     page.set_viewport_size({"width": width, "height": 800})
     overflow = {}

@@ -2,7 +2,6 @@
 
 import re
 
-import pytest
 from playwright.sync_api import Page, expect
 
 STATUS = re.compile(r"показано (\d+) из (\d+)")
@@ -74,12 +73,9 @@ def test_people_no_shift_year_shows_message(page: Page):
     assert visible_cards(page) == 0
 
 
-@pytest.mark.xfail(
-    reason="BUG-002: при неизвестном значении фильтра не подсвечена ни одна кнопка года",
-    strict=True,
-)
 def test_people_unknown_filter_value(page: Page):
-    """Значение из адреса, которого нет среди кнопок, например старая или испорченная ссылка."""
+    """Значение из адреса, которого нет среди кнопок, например старая или испорченная ссылка.
+    Регрессия BUG-002."""
     page.goto("/people.html?year=abc")
     expect(page.locator(".people-status")).to_contain_text("Никого не нашли")
     # Пользователь должен видеть, какой фильтр сейчас действует, чтобы сбросить его.
@@ -136,11 +132,9 @@ def test_photo_keyboard_access(page: Page):
     expect(photo).to_be_focused()
 
 
-@pytest.mark.xfail(
-    reason="BUG-003: у фото, которое открывается по нажатию, нет роли кнопки", strict=True
-)
 def test_photo_has_button_semantics(page: Page):
-    """Фото открывается по нажатию, значит экранная читалка должна объявлять его как кнопку."""
+    """Фото открывается по нажатию, значит экранная читалка должна объявлять его как кнопку.
+    Регрессия BUG-003."""
     page.goto("/history.html")
     photo = page.locator(".photos img").first
     assert photo.get_attribute("role") == "button" or photo.evaluate(
